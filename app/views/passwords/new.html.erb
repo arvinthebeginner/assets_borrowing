@@ -1,0 +1,21 @@
+<% content_for :title, "Lupa kata sandi" %>
+
+<div class="mx-auto w-full max-w-md rounded-lg border border-gray-200 bg-white p-8">
+  <h1 class="text-2xl font-bold">Lupa kata sandi</h1>
+  <p class="mt-1 text-sm text-gray-500">Kami kirimkan tautan setel ulang ke emailmu.</p>
+
+  <%= form_with url: passwords_path, class: "contents" do |form| %>
+    <div class="my-5">
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username",
+            placeholder: "nama@kantor.co.id",
+            class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:outline-blue-600" %>
+    </div>
+
+    <%= form.submit "Kirim tautan setel ulang",
+          class: "w-full cursor-pointer rounded-md bg-blue-600 px-3.5 py-2.5 font-medium text-white hover:bg-blue-500" %>
+  <% end %>
+
+  <p class="mt-4 text-sm">
+    <%= link_to "Kembali ke halaman masuk", new_session_path, class: "text-gray-600 underline hover:no-underline" %>
+  </p>
+</div>

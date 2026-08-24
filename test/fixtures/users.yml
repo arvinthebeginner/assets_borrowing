@@ -1,0 +1,22 @@
+<% password_digest = BCrypt::Password.create("rahasia123") %>
+
+karyawan:
+  name: Dewi Lestari
+  email_address: dewi@kantor.co.id
+  password_digest: <%= password_digest %>
+  role: employee
+  department: Marketing
+
+admin_aset:
+  name: Bagas Pratama
+  email_address: bagas@kantor.co.id
+  password_digest: <%= password_digest %>
+  role: asset_admin
+  department: IT
+
+manajer:
+  name: Rina Wijaya
+  email_address: rina@kantor.co.id
+  password_digest: <%= password_digest %>
+  role: manager
+  department: Operasional

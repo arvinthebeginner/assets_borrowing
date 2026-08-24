@@ -1,0 +1,5 @@
+id:
+  roles:
+    employee: Karyawan
+    asset_admin: Admin Aset
+    manager: Manajer
