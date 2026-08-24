@@ -1,0 +1,10 @@
+macbook:
+  asset_category: laptop
+  brand: Apple
+  model: MacBook Pro 14 M3
+  description: Untuk kebutuhan desain dan pengembangan.
+
+sony_a7:
+  asset_category: kamera
+  brand: Sony
+  model: Alpha 7 IV

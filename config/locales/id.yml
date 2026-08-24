@@ -3,3 +3,14 @@ id:
     employee: Karyawan
     asset_admin: Admin Aset
     manager: Manajer
+
+  asset_unit:
+    statuses:
+      available: Tersedia
+      maintenance: Perbaikan
+      retired: Tidak dipakai
+    conditions:
+      good: Baik
+      minor_damage: Lecet ringan
+      damaged: Rusak
+      lost: Hilang

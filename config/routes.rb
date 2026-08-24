@@ -11,5 +11,10 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  root "home#index"
+  root "assets#index"
+
+  resources :asset_categories, path: "kategori", except: :show
+  resources :assets, path: "aset" do
+    resources :asset_units, path: "unit", except: %i[index show]
+  end
 end

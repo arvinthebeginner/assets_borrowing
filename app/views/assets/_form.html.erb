@@ -1,0 +1,41 @@
+<%= form_with model: asset, class: "contents" do |form| %>
+  <%= render "shared/form_errors", record: asset %>
+
+  <div class="my-5">
+    <%= form.label :asset_category_id, "Kategori", class: "block text-sm font-medium" %>
+    <%= form.collection_select :asset_category_id, AssetCategory.alphabetical, :id, :name,
+          { prompt: "Pilih kategori" },
+          class: "mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+  </div>
+
+  <div class="my-5 grid gap-5 sm:grid-cols-2">
+    <div>
+      <%= form.label :brand, "Merek", class: "block text-sm font-medium" %>
+      <%= form.text_field :brand, placeholder: "Apple",
+            class: "mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+    </div>
+    <div>
+      <%= form.label :model, "Model", class: "block text-sm font-medium" %>
+      <%= form.text_field :model, placeholder: "MacBook Pro 14 M3",
+            class: "mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+    </div>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description, "Deskripsi", class: "block text-sm font-medium" %>
+    <%= form.text_area :description, rows: 4,
+          class: "mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :photo, "Foto", class: "block text-sm font-medium" %>
+    <p class="text-xs text-gray-500">PNG, JPEG, atau WebP. Maksimal 5 MB.</p>
+    <%= form.file_field :photo, accept: "image/png,image/jpeg,image/webp", class: "mt-2 block w-full text-sm" %>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= form.submit class: "cursor-pointer rounded-md bg-blue-600 px-3.5 py-2.5 font-medium text-white hover:bg-blue-500" %>
+    <%= link_to "Batal", asset.persisted? ? asset_path(asset) : assets_path,
+          class: "text-sm text-gray-600 hover:underline" %>
+  </div>
+<% end %>

@@ -1,0 +1,49 @@
+<%= form_with model: [ asset, asset_unit ], class: "contents" do |form| %>
+  <%= render "shared/form_errors", record: asset_unit %>
+
+  <div class="my-5 grid gap-5 sm:grid-cols-2">
+    <div>
+      <%= form.label :asset_tag, "Tag aset", class: "block text-sm font-medium" %>
+      <p class="text-xs text-gray-500">Nomor inventaris kantor, mis. IT-LP-014.</p>
+      <%= form.text_field :asset_tag, autofocus: true,
+            class: "mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+    </div>
+    <div>
+      <%= form.label :serial_number, "Nomor seri", class: "block text-sm font-medium" %>
+      <p class="text-xs text-gray-500">Nomor seri dari pabrikan.</p>
+      <%= form.text_field :serial_number,
+            class: "mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+    </div>
+  </div>
+
+  <div class="my-5 grid gap-5 sm:grid-cols-2">
+    <div>
+      <%= form.label :status, "Status", class: "block text-sm font-medium" %>
+      <%= form.select :status,
+            AssetUnit.statuses.keys.map { |s| [ t("asset_unit.statuses.#{s}"), s ] },
+            {}, class: "mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+    </div>
+    <div>
+      <%= form.label :condition, "Kondisi", class: "block text-sm font-medium" %>
+      <%= form.select :condition,
+            AssetUnit.conditions.keys.map { |c| [ t("asset_unit.conditions.#{c}"), c ] },
+            {}, class: "mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+    </div>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :notes, "Catatan", class: "block text-sm font-medium" %>
+    <%= form.text_area :notes, rows: 3,
+          class: "mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= form.submit class: "cursor-pointer rounded-md bg-blue-600 px-3.5 py-2.5 font-medium text-white hover:bg-blue-500" %>
+    <%= link_to "Batal", asset_path(asset), class: "text-sm text-gray-600 hover:underline" %>
+    <% if asset_unit.persisted? %>
+      <%= button_to "Hapus unit", [ asset, asset_unit ], method: :delete,
+            form: { data: { turbo_confirm: "Hapus unit #{asset_unit.asset_tag}?" } },
+            class: "ml-auto cursor-pointer text-sm text-red-600 hover:underline" %>
+    <% end %>
+  </div>
+<% end %>

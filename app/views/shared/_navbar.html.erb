@@ -5,6 +5,13 @@
     <% end %>
 
     <% if authenticated? %>
+      <div class="mr-auto flex items-center gap-4 text-sm">
+        <%= link_to "Katalog", assets_path, class: "font-medium text-gray-700 hover:text-blue-600" %>
+        <% if current_user.asset_admin? %>
+          <%= link_to "Kategori", asset_categories_path, class: "font-medium text-gray-700 hover:text-blue-600" %>
+        <% end %>
+      </div>
+
       <div class="flex items-center gap-4 text-sm">
         <span class="hidden text-gray-500 sm:inline">
           <%= current_user.name %>

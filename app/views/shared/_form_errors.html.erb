@@ -1,0 +1,10 @@
+<% if record.errors.any? %>
+  <div class="mb-5 rounded-lg bg-red-50 p-4 text-sm text-red-700">
+    <p class="font-medium">Ada <%= record.errors.count %> hal yang perlu diperbaiki:</p>
+    <ul class="mt-2 list-inside list-disc">
+      <% record.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

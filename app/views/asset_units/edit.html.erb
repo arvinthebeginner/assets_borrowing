@@ -1,0 +1,7 @@
+<% content_for :title, "Ubah unit #{@asset_unit.asset_tag}" %>
+
+<div class="mx-auto max-w-2xl">
+  <%= link_to "← #{@asset.name}", asset_path(@asset), class: "text-sm text-gray-600 hover:underline" %>
+  <h1 class="mt-1 text-2xl font-bold">Ubah unit <%= @asset_unit.asset_tag %></h1>
+  <%= render "form", asset: @asset, asset_unit: @asset_unit %>
+</div>

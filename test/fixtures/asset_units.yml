@@ -1,0 +1,20 @@
+macbook_satu:
+  asset: macbook
+  asset_tag: IT-LP-001
+  serial_number: SN-MBP-001
+  status: available
+  condition: good
+
+macbook_dua:
+  asset: macbook
+  asset_tag: IT-LP-002
+  serial_number: SN-MBP-002
+  status: maintenance
+  condition: damaged
+
+kamera_satu:
+  asset: sony_a7
+  asset_tag: IT-CM-001
+  serial_number: SN-A7-001
+  status: available
+  condition: good

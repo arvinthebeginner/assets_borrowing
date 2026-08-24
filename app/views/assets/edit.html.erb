@@ -1,0 +1,6 @@
+<% content_for :title, "Ubah #{@asset.name}" %>
+
+<div class="mx-auto max-w-2xl">
+  <h1 class="text-2xl font-bold">Ubah <%= @asset.name %></h1>
+  <%= render "form", asset: @asset %>
+</div>

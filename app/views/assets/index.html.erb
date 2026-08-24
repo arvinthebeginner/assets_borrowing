@@ -1,0 +1,55 @@
+<% content_for :title, "Katalog aset" %>
+
+<div class="flex flex-wrap items-center justify-between gap-4">
+  <div>
+    <h1 class="text-3xl font-bold">Katalog aset</h1>
+    <p class="mt-1 text-gray-600">Aset IT yang bisa dipinjam karyawan.</p>
+  </div>
+
+  <% if current_user.asset_admin? %>
+    <div class="flex gap-2">
+      <%= link_to "Kelola kategori", asset_categories_path,
+            class: "rounded-md border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium hover:bg-gray-50" %>
+      <%= link_to "Tambah aset", new_asset_path,
+            class: "rounded-md bg-blue-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-blue-500" %>
+    </div>
+  <% end %>
+</div>
+
+<nav class="mt-6 flex flex-wrap gap-2">
+  <%= link_to "Semua", assets_path,
+        class: "rounded-full px-3 py-1 text-sm #{@category ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' : 'bg-gray-900 text-white'}" %>
+  <% @categories.each do |category| %>
+    <%= link_to category.name, assets_path(kategori: category.slug),
+          class: "rounded-full px-3 py-1 text-sm #{@category == category ? 'bg-gray-900 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}" %>
+  <% end %>
+</nav>
+
+<% if @assets.any? %>
+  <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <% @assets.each do |asset| %>
+      <%= link_to asset, class: "block overflow-hidden rounded-lg border border-gray-200 bg-white transition hover:border-blue-400 hover:shadow-sm" do %>
+        <div class="flex h-40 items-center justify-center bg-gray-100">
+          <% if asset.photo.attached? %>
+            <%= image_tag asset.photo, class: "h-40 w-full object-cover", alt: asset.name %>
+          <% else %>
+            <span class="text-sm text-gray-400">Tanpa foto</span>
+          <% end %>
+        </div>
+
+        <div class="p-4">
+          <p class="text-xs font-medium uppercase tracking-wide text-blue-600"><%= asset.asset_category.name %></p>
+          <h2 class="mt-1 font-semibold text-gray-900"><%= asset.name %></h2>
+          <p class="mt-2 text-sm text-gray-500">
+            <%= asset.asset_units.size %> unit ·
+            <%= asset.asset_units.count(&:available?) %> tersedia
+          </p>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <p class="mt-8 rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-gray-500">
+    Belum ada aset<%= " di kategori #{@category.name}" if @category %>.
+  </p>
+<% end %>
