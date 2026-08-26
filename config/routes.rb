@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
+    resource :dashboard, path: "laporan", only: :show
     resources :borrow_requests, path: "peminjaman", only: :index do
       member do
         patch :approve

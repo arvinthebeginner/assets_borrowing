@@ -13,6 +13,16 @@ class Asset < ApplicationRecord
   validate :photo_must_be_a_reasonable_image
 
   scope :alphabetical, -> { order(:brand, :model) }
+  # Unit yang paling sering dipinjam, diurutkan dari yang terbanyak.
+  scope :most_borrowed, ->(limit = 5) {
+    joins(asset_units: :borrow_requests)
+      .where(borrow_requests: { status: BorrowRequest::FULFILLED_STATUSES })
+      .group(:id)
+      .select("assets.*, COUNT(borrow_requests.id) AS borrow_count")
+      .order(Arel.sql("COUNT(borrow_requests.id) DESC"), :brand, :model)
+      .limit(limit)
+  }
+
   scope :in_category, ->(slug) {
     slug.present? ? joins(:asset_category).where(asset_categories: { slug: slug }) : all
   }

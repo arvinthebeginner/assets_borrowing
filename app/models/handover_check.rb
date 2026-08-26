@@ -49,7 +49,7 @@ class HandoverCheck < ApplicationRecord
       asset_unit.update!(condition: condition, status: unit_status_after_check)
     end
 
-    # Kalau serah terima adalah pengambilan, status unit tidak berubah. 
+    # Kalau serah terima adalah pengambilan, status unit tidak berubah.
     # Kalau serah terima adalah pengembalian, status unit tergantung kondisi unit.
     def unit_status_after_check
       return asset_unit.status if pickup?

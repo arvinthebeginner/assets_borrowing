@@ -11,6 +11,9 @@ class BorrowRequest < ApplicationRecord
   # Status yang mengunci unit sehingga peminjam lain tidak bisa meminjamnya
   BLOCKING_STATUSES = %w[approved picked_up].freeze
 
+  # Status yang menandakan peminjaman sudah selesai, sehingga bisa dihitung di laporan
+  FULFILLED_STATUSES = %w[approved picked_up returned].freeze
+
   MAX_DURATION_DAYS = 30
 
   belongs_to :user
@@ -33,6 +36,7 @@ class BorrowRequest < ApplicationRecord
   validate :unit_must_be_free, if: :conflict_check_needed?
 
   scope :blocking, -> { where(status: BLOCKING_STATUSES) }
+  scope :fulfilled, -> { where(status: FULFILLED_STATUSES) }
   scope :overlapping, ->(from, to) { where("start_on <= ? AND end_on >= ?", to, from) }
   scope :overdue, -> { picked_up.where(end_on: ...Date.current) }
   scope :latest_first, -> { order(created_at: :desc) }

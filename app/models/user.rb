@@ -15,6 +15,15 @@ class User < ApplicationRecord
 
   validates :name, presence: true
 
+  scope :most_active_borrowers, ->(limit = 5) {
+    joins(:borrow_requests)
+      .where(borrow_requests: { status: BorrowRequest::FULFILLED_STATUSES })
+      .group(:id)
+      .select("users.*, COUNT(borrow_requests.id) AS borrow_count")
+      .order(Arel.sql("COUNT(borrow_requests.id) DESC"), :name)
+      .limit(limit)
+  }
+
   # Manajer ikut melihat halaman admin yang bersifat baca-saja (dashboard).
   def can_view_reports?
     asset_admin? || manager?
