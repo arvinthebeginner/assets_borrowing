@@ -1,0 +1,92 @@
+<% content_for :title, "Ajukan peminjaman" %>
+
+<%= link_to "← #{@asset.name}", @asset, class: "text-sm text-gray-600 hover:underline" %>
+
+<h1 class="mt-4 text-3xl font-bold">Ajukan peminjaman</h1>
+<p class="mt-1 text-gray-600">
+  <%= @asset.name %> · <%= @asset.asset_category.name %>
+</p>
+
+<div class="mt-6 max-w-2xl space-y-6">
+  <section class="rounded-lg border border-gray-200 bg-white p-5">
+    <h2 class="font-semibold">1. Pilih rentang tanggal</h2>
+    <p class="mt-1 text-sm text-gray-500">Unit yang masih kosong di rentang itu akan muncul di bawah.</p>
+
+    <%= form_with url: new_borrow_request_path, method: :get, class: "mt-4 flex flex-wrap items-end gap-3" do %>
+      <%= hidden_field_tag :asset_id, @asset.id %>
+
+      <div>
+        <%= label_tag :start_on, "Tanggal mulai", class: "block text-sm font-medium text-gray-700" %>
+        <%= date_field_tag :start_on, @borrow_request.start_on, required: true, min: Date.current,
+              class: "mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
+
+      <div>
+        <%= label_tag :end_on, "Tanggal selesai", class: "block text-sm font-medium text-gray-700" %>
+        <%= date_field_tag :end_on, @borrow_request.end_on, required: true, min: Date.current,
+              class: "mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
+
+      <%= submit_tag "Cek ketersediaan",
+            class: "cursor-pointer rounded-md border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium hover:bg-gray-50" %>
+    <% end %>
+  </section>
+
+  <% if @borrow_request.start_on.present? && @borrow_request.end_on.present? %>
+    <section class="rounded-lg border border-gray-200 bg-white p-5">
+      <h2 class="font-semibold">2. Pilih unit dan isi keperluan</h2>
+
+      <% if @available_units.any? %>
+        <p class="mt-1 text-sm text-gray-500">
+          <%= @available_units.size %> unit tersedia untuk
+          <%= borrow_date_range @borrow_request %>
+          (<%= @borrow_request.duration_days %> hari).
+        </p>
+
+        <%= form_with model: @borrow_request, class: "mt-4 space-y-4" do |form| %>
+          <%= render "shared/form_errors", record: @borrow_request %>
+
+          <%= hidden_field_tag :asset_id, @asset.id %>
+          <%= form.hidden_field :start_on %>
+          <%= form.hidden_field :end_on %>
+
+          <% selected_unit_id = @borrow_request.asset_unit_id || @available_units.first.id %>
+          <fieldset class="space-y-2">
+            <legend class="text-sm font-medium text-gray-700">Unit</legend>
+            <% @available_units.each do |unit| %>
+              <label class="flex cursor-pointer items-center gap-3 rounded-md border border-gray-300 px-3 py-2.5 hover:bg-gray-50">
+                <%= form.radio_button :asset_unit_id, unit.id, checked: selected_unit_id == unit.id %>
+                <span class="text-sm">
+                  <span class="font-medium"><%= unit.asset_tag %></span>
+                  <span class="text-gray-500">· <%= unit.serial_number %></span>
+                </span>
+                <span class="ml-auto"><%= unit_condition_badge unit %></span>
+              </label>
+            <% end %>
+          </fieldset>
+
+          <div>
+            <%= form.label :purpose, "Keperluan", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.text_area :purpose, rows: 3, required: true,
+                  placeholder: "Contoh: dokumentasi kunjungan klien di Bandung.",
+                  class: "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+          </div>
+
+          <%= form.submit "Ajukan peminjaman",
+                class: "cursor-pointer rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500" %>
+        <% end %>
+      <% else %>
+        <%= render "shared/form_errors", record: @borrow_request %>
+
+        <p class="mt-3 rounded-lg border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
+          <% if @borrow_request.end_on < @borrow_request.start_on %>
+            Tanggal selesai lebih awal dari tanggal mulai.
+          <% else %>
+            Tidak ada unit <%= @asset.name %> yang kosong pada
+            <%= borrow_date_range @borrow_request %>. Coba geser tanggalnya.
+          <% end %>
+        </p>
+      <% end %>
+    </section>
+  <% end %>
+</div>

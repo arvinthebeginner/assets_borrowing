@@ -13,6 +13,7 @@ class AssetUnit < ApplicationRecord
   }.freeze
 
   belongs_to :asset
+  has_many :borrow_requests, dependent: :destroy
 
   enum :status, STATUSES, validate: true
   enum :condition, CONDITIONS, validate: true
@@ -24,6 +25,18 @@ class AssetUnit < ApplicationRecord
   validates :serial_number, presence: true, uniqueness: true
 
   scope :ordered, -> { order(:asset_tag) }
+
+  # Unit yang bisa dipinjam di rentang tanggal tertentu
+  scope :available_between, ->(from, to) {
+    available.where.not(
+      id: BorrowRequest.blocking.overlapping(from, to).select(:asset_unit_id)
+    )
+  }
+
+  # Dipakai di daftar pilihan unit pada form peminjaman.
+  def label
+    "#{asset.name} · #{asset_tag}"
+  end
 
   def to_s
     asset_tag

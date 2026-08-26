@@ -1,0 +1,28 @@
+kamera_disetujui:
+  user: karyawan
+  asset_unit: kamera_satu
+  purpose: Dokumentasi kunjungan klien di Bandung.
+  start_on: <%= 5.days.from_now.to_date.to_fs(:db) %>
+  end_on: <%= 8.days.from_now.to_date.to_fs(:db) %>
+  status: approved
+  decided_by: admin_aset
+  decided_at: <%= 1.day.ago.to_fs(:db) %>
+
+laptop_menunggu:
+  user: karyawan
+  asset_unit: macbook_satu
+  purpose: Presentasi ke kantor pusat.
+  start_on: <%= 5.days.from_now.to_date.to_fs(:db) %>
+  end_on: <%= 6.days.from_now.to_date.to_fs(:db) %>
+  status: pending
+
+laptop_terlambat:
+  user: manajer
+  asset_unit: macbook_satu
+  purpose: Uji coba perangkat baru.
+  start_on: <%= 10.days.ago.to_date.to_fs(:db) %>
+  end_on: <%= 3.days.ago.to_date.to_fs(:db) %>
+  status: picked_up
+  decided_by: admin_aset
+  decided_at: <%= 11.days.ago.to_fs(:db) %>
+  picked_up_at: <%= 10.days.ago.to_fs(:db) %>

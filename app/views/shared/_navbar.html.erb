@@ -7,6 +7,10 @@
     <% if authenticated? %>
       <div class="mr-auto flex items-center gap-4 text-sm">
         <%= link_to "Katalog", assets_path, class: "font-medium text-gray-700 hover:text-blue-600" %>
+        <%= link_to "Peminjaman saya", borrow_requests_path, class: "font-medium text-gray-700 hover:text-blue-600" %>
+        <% if current_user.can_view_reports? %>
+          <%= link_to "Antrian", admin_borrow_requests_path, class: "font-medium text-gray-700 hover:text-blue-600" %>
+        <% end %>
         <% if current_user.asset_admin? %>
           <%= link_to "Kategori", asset_categories_path, class: "font-medium text-gray-700 hover:text-blue-600" %>
         <% end %>

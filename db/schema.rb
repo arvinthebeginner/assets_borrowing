@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_24_164642) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_26_090000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -74,6 +74,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_164642) do
     t.index ["brand", "model"], name: "index_assets_on_brand_and_model", unique: true
   end
 
+  create_table "borrow_requests", force: :cascade do |t|
+    t.integer "asset_unit_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "decided_at"
+    t.integer "decided_by_id"
+    t.date "end_on", null: false
+    t.datetime "picked_up_at"
+    t.text "purpose", null: false
+    t.text "rejection_reason"
+    t.datetime "returned_at"
+    t.date "start_on", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["asset_unit_id", "start_on", "end_on"], name: "index_borrow_requests_on_asset_unit_id_and_start_on_and_end_on"
+    t.index ["asset_unit_id"], name: "index_borrow_requests_on_asset_unit_id"
+    t.index ["decided_by_id"], name: "index_borrow_requests_on_decided_by_id"
+    t.index ["status"], name: "index_borrow_requests_on_status"
+    t.index ["user_id"], name: "index_borrow_requests_on_user_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -99,5 +120,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_164642) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "asset_units", "assets"
   add_foreign_key "assets", "asset_categories"
+  add_foreign_key "borrow_requests", "asset_units"
+  add_foreign_key "borrow_requests", "users"
+  add_foreign_key "borrow_requests", "users", column: "decided_by_id"
   add_foreign_key "sessions", "users"
 end

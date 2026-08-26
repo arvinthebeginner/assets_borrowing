@@ -1,4 +1,20 @@
 id:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%-d %B %Y"
+      short: "%-d %b"
+    month_names: [~, Januari, Februari, Maret, April, Mei, Juni, Juli, Agustus, September, Oktober, November, Desember]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, Mei, Jun, Jul, Agu, Sep, Okt, Nov, Des]
+    day_names: [Minggu, Senin, Selasa, Rabu, Kamis, Jumat, Sabtu]
+    abbr_day_names: [Min, Sen, Sel, Rab, Kam, Jum, Sab]
+
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      long: "%-d %B %Y, %H:%M"
+      short: "%-d %b %H:%M"
+
   roles:
     employee: Karyawan
     asset_admin: Admin Aset
@@ -14,3 +30,12 @@ id:
       minor_damage: Lecet ringan
       damaged: Rusak
       lost: Hilang
+
+  borrow_request:
+    statuses:
+      pending: Menunggu
+      approved: Disetujui
+      picked_up: Sedang dipinjam
+      returned: Dikembalikan
+      rejected: Ditolak
+      cancelled: Dibatalkan

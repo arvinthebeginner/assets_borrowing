@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   has_secure_password
   has_many :sessions, dependent: :destroy
+  has_many :borrow_requests, dependent: :restrict_with_error
 
   enum :role, ROLES, validate: true
 
