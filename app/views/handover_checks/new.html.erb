@@ -1,0 +1,47 @@
+<% unit = @borrow_request.asset_unit %>
+<% kind_label = t("handover_check.kinds.#{@handover_check.kind}") %>
+<% content_for :title, "#{kind_label} #{unit.asset_tag}" %>
+
+<%= link_to "← Detail peminjaman", @borrow_request, class: "text-sm text-gray-600 hover:underline" %>
+
+<div class="mt-4 max-w-2xl">
+  <h1 class="text-3xl font-bold">Catat <%= kind_label.downcase %></h1>
+  <p class="mt-1 text-gray-600">
+    <%= unit.asset.name %> · unit <%= unit.asset_tag %> ·
+    <%= @borrow_request.user.name %>
+  </p>
+
+  <%= form_with model: [ @borrow_request, @handover_check ], class: "mt-6 space-y-5 rounded-lg border border-gray-200 bg-white p-5" do |form| %>
+    <%= render "shared/form_errors", record: @handover_check %>
+
+    <%= form.hidden_field :kind %>
+
+    <fieldset class="space-y-2">
+      <legend class="text-sm font-medium text-gray-700">Kondisi barang saat diserahkan</legend>
+      <% AssetUnit::CONDITIONS.each_key do |condition| %>
+        <label class="flex cursor-pointer items-center gap-3 rounded-md border border-gray-300 px-3 py-2.5 hover:bg-gray-50">
+          <%= form.radio_button :condition, condition %>
+          <span class="text-sm font-medium"><%= t "asset_unit.conditions.#{condition}" %></span>
+        </label>
+      <% end %>
+    </fieldset>
+
+    <% if @handover_check.dropoff? %>
+      <p class="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        Barang yang kembali dalam kondisi <strong>rusak</strong> akan memindahkan unit ke status
+        perbaikan, dan <strong>hilang</strong> memindahkannya ke tidak dipakai. Unit yang bukan
+        tersedia tidak akan muncul lagi di pencarian ketersediaan.
+      </p>
+    <% end %>
+
+    <div>
+      <%= form.label :notes, "Catatan", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_area :notes, rows: 3,
+            placeholder: "Contoh: lecet di sudut kiri layar, charger lengkap.",
+            class: "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+
+    <%= form.submit "Simpan catatan #{kind_label.downcase}",
+          class: "cursor-pointer rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500" %>
+  <% end %>
+</div>

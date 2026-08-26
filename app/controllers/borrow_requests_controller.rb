@@ -1,10 +1,15 @@
 class BorrowRequestsController < ApplicationController
   before_action :set_asset, only: %i[new create]
+  before_action :set_visible_borrow_request, only: :show
 
   def index
     @borrow_requests = current_user.borrow_requests
                                    .includes(asset_unit: :asset)
                                    .latest_first
+  end
+
+  def show
+    @handover_checks = @borrow_request.handover_checks.includes(:checked_by).chronological
   end
 
   def new
@@ -37,12 +42,20 @@ class BorrowRequestsController < ApplicationController
   end
 
   private
+    # Set peminjaman yang bisa dilihat oleh pengguna saat ini.
+    def set_visible_borrow_request
+      @borrow_request = BorrowRequest.includes(:user, :decided_by, asset_unit: :asset)
+                                     .find(params[:id])
+
+      deny_access unless @borrow_request.user == current_user || current_user.can_view_reports?
+    end
+
     # Set asset yang sedang dipinjam.
     def set_asset
       @asset = Asset.find(params[:asset_id])
     end
 
-    # Daftar unit yang tersedia untuk dipinjam di rentang tanggal yang diminta. 
+    # Daftar unit yang tersedia untuk dipinjam di rentang tanggal yang diminta.
     def available_units
       from = @borrow_request.start_on
       to = @borrow_request.end_on

@@ -17,8 +17,9 @@ Rails.application.routes.draw do
     resources :asset_units, path: "unit", except: %i[index show]
   end
 
-  resources :borrow_requests, path: "peminjaman", only: %i[index new create] do
+  resources :borrow_requests, path: "peminjaman", only: %i[index show new create] do
     patch :cancel, on: :member
+    resources :handover_checks, path: "serah-terima", only: %i[new create]
   end
 
   namespace :admin do

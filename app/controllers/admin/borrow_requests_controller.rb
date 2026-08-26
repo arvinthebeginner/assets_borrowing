@@ -5,14 +5,15 @@ module Admin
     before_action :require_asset_admin, only: %i[approve reject]
     before_action :set_borrow_request, only: %i[approve reject]
 
-    TABS = %w[pending approved picked_up returned rejected cancelled].freeze
+    # Daftar status peminjaman yang bisa dipilih di tab.
+    TABS = %w[pending approved picked_up overdue returned rejected cancelled].freeze
 
     def index
-      @status = TABS.include?(params[:status]) ? params[:status] : "pending"
-      @counts = BorrowRequest.group(:status).count
-      @borrow_requests = BorrowRequest.where(status: @status)
-                                      .includes(:user, :decided_by, asset_unit: :asset)
-                                      .by_start_date
+      @tab = TABS.include?(params[:status]) ? params[:status] : "pending"
+      @counts = BorrowRequest.group(:status).count.merge("overdue" => BorrowRequest.overdue.count)
+      @borrow_requests = requests_for_tab
+                           .includes(:user, :decided_by, asset_unit: :asset)
+                           .by_start_date
     end
 
     def approve
@@ -32,6 +33,10 @@ module Admin
     end
 
     private
+      def requests_for_tab
+        @tab == "overdue" ? BorrowRequest.overdue : BorrowRequest.where(status: @tab)
+      end
+
       def set_borrow_request
         @borrow_request = BorrowRequest.find(params[:id])
       end

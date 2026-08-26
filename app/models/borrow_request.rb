@@ -8,7 +8,7 @@ class BorrowRequest < ApplicationRecord
     returned: "returned"    # barang sudah kembali
   }.freeze
 
-# Status yang mengunci unit sehingga peminjam lain tidak bisa meminjamnya
+  # Status yang mengunci unit sehingga peminjam lain tidak bisa meminjamnya
   BLOCKING_STATUSES = %w[approved picked_up].freeze
 
   MAX_DURATION_DAYS = 30
@@ -18,6 +18,9 @@ class BorrowRequest < ApplicationRecord
   belongs_to :decided_by, class_name: "User", optional: true
 
   has_one :asset, through: :asset_unit
+  has_many :handover_checks, dependent: :destroy
+  has_one :pickup_check, -> { pickup }, class_name: "HandoverCheck", inverse_of: :borrow_request
+  has_one :dropoff_check, -> { dropoff }, class_name: "HandoverCheck", inverse_of: :borrow_request
 
   enum :status, STATUSES, validate: true
 
@@ -84,6 +87,14 @@ class BorrowRequest < ApplicationRecord
 
   def cancellable?
     pending? || approved?
+  end
+
+  # Jenis serah terima berikutnya yang harus dilakukan, atau `nil` kalau tidak ada.
+  def next_handover_kind
+    return "pickup" if approved?
+    return "dropoff" if picked_up?
+
+    nil
   end
 
   def blocking?

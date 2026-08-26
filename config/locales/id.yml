@@ -39,3 +39,9 @@ id:
       returned: Dikembalikan
       rejected: Ditolak
       cancelled: Dibatalkan
+      overdue: Terlambat
+
+  handover_check:
+    kinds:
+      pickup: Pengambilan
+      dropoff: Pengembalian

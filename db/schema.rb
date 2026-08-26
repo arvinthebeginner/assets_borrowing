@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_26_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_26_120000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -95,6 +95,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_090000) do
     t.index ["user_id"], name: "index_borrow_requests_on_user_id"
   end
 
+  create_table "handover_checks", force: :cascade do |t|
+    t.integer "borrow_request_id", null: false
+    t.datetime "checked_at", null: false
+    t.integer "checked_by_id", null: false
+    t.string "condition", null: false
+    t.datetime "created_at", null: false
+    t.string "kind", null: false
+    t.text "notes"
+    t.datetime "updated_at", null: false
+    t.index ["borrow_request_id", "kind"], name: "index_handover_checks_on_borrow_request_id_and_kind", unique: true
+    t.index ["borrow_request_id"], name: "index_handover_checks_on_borrow_request_id"
+    t.index ["checked_by_id"], name: "index_handover_checks_on_checked_by_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -123,5 +137,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_090000) do
   add_foreign_key "borrow_requests", "asset_units"
   add_foreign_key "borrow_requests", "users"
   add_foreign_key "borrow_requests", "users", column: "decided_by_id"
+  add_foreign_key "handover_checks", "borrow_requests"
+  add_foreign_key "handover_checks", "users", column: "checked_by_id"
   add_foreign_key "sessions", "users"
 end

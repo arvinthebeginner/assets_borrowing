@@ -1,0 +1,101 @@
+<% unit = @borrow_request.asset_unit %>
+<% content_for :title, "Peminjaman #{unit.asset_tag}" %>
+
+<%= link_to "← Kembali", (current_user.can_view_reports? ? admin_borrow_requests_path : borrow_requests_path),
+      class: "text-sm text-gray-600 hover:underline" %>
+
+<div class="mt-4 max-w-3xl">
+  <div class="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold"><%= unit.asset.name %></h1>
+      <p class="mt-1 text-gray-600">
+        Unit <%= unit.asset_tag %> · <%= unit.serial_number %>
+      </p>
+    </div>
+    <%= borrow_status_badge @borrow_request %>
+  </div>
+
+  <dl class="mt-6 grid gap-4 rounded-lg border border-gray-200 bg-white p-5 sm:grid-cols-2">
+    <div>
+      <dt class="text-xs uppercase tracking-wide text-gray-500">Peminjam</dt>
+      <dd class="mt-1 text-sm font-medium"><%= @borrow_request.user.name %>
+        <span class="font-normal text-gray-500">· <%= @borrow_request.user.department %></span>
+      </dd>
+    </div>
+    <div>
+      <dt class="text-xs uppercase tracking-wide text-gray-500">Rentang pinjam</dt>
+      <dd class="mt-1 text-sm font-medium">
+        <%= borrow_date_range @borrow_request %>
+        <span class="font-normal text-gray-500">(<%= @borrow_request.duration_days %> hari)</span>
+      </dd>
+    </div>
+    <div>
+      <dt class="text-xs uppercase tracking-wide text-gray-500">Kondisi unit sekarang</dt>
+      <dd class="mt-1"><%= unit_condition_badge unit %> <%= unit_status_badge unit %></dd>
+    </div>
+    <div>
+      <dt class="text-xs uppercase tracking-wide text-gray-500">Diajukan</dt>
+      <dd class="mt-1 text-sm"><%= l @borrow_request.created_at, format: :long %></dd>
+    </div>
+    <div class="sm:col-span-2">
+      <dt class="text-xs uppercase tracking-wide text-gray-500">Keperluan</dt>
+      <dd class="mt-1 whitespace-pre-line text-sm text-gray-700"><%= @borrow_request.purpose %></dd>
+    </div>
+    <% if @borrow_request.decided_by.present? %>
+      <div class="sm:col-span-2">
+        <dt class="text-xs uppercase tracking-wide text-gray-500">Keputusan</dt>
+        <dd class="mt-1 text-sm text-gray-700">
+          <%= @borrow_request.decided_by.name %> pada
+          <%= l @borrow_request.decided_at, format: :long %>.
+          <%= @borrow_request.rejection_reason %>
+        </dd>
+      </div>
+    <% end %>
+  </dl>
+
+  <% if @borrow_request.overdue? %>
+    <p class="mt-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">
+      Sudah lewat tanggal kembali <%= l @borrow_request.end_on, format: :long %>.
+    </p>
+  <% end %>
+
+  <div class="mt-5 flex flex-wrap gap-2">
+    <% if current_user.asset_admin? && @borrow_request.next_handover_kind.present? %>
+      <% next_kind = t("handover_check.kinds.#{@borrow_request.next_handover_kind}").downcase %>
+      <%= link_to "Catat #{next_kind}", new_borrow_request_handover_check_path(@borrow_request),
+            class: "rounded-md bg-blue-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-blue-500" %>
+    <% end %>
+
+    <% if @borrow_request.user == current_user && @borrow_request.cancellable? %>
+      <%= button_to "Batalkan", cancel_borrow_request_path(@borrow_request), method: :patch,
+            form: { data: { turbo_confirm: "Batalkan peminjaman #{unit.asset_tag}?" } },
+            class: "cursor-pointer rounded-md border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+    <% end %>
+  </div>
+
+  <h2 class="mt-8 text-lg font-semibold">Riwayat serah-terima</h2>
+
+  <% if @handover_checks.any? %>
+    <ol class="mt-3 space-y-3">
+      <% @handover_checks.each do |check| %>
+        <li class="rounded-lg border border-gray-200 bg-white p-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <p class="font-medium"><%= t "handover_check.kinds.#{check.kind}" %></p>
+            <p class="text-sm text-gray-500"><%= l check.checked_at, format: :long %></p>
+          </div>
+          <p class="mt-2 text-sm text-gray-600">
+            Kondisi: <%= t "asset_unit.conditions.#{check.condition}" %> ·
+            dicatat <%= check.checked_by.name %>
+          </p>
+          <% if check.notes.present? %>
+            <p class="mt-2 whitespace-pre-line text-sm text-gray-700"><%= check.notes %></p>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <p class="mt-3 rounded-lg border border-dashed border-gray-300 bg-white p-6 text-center text-sm text-gray-500">
+      Belum ada catatan serah-terima.
+    </p>
+  <% end %>
+</div>

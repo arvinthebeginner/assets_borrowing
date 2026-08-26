@@ -65,6 +65,31 @@ class BorrowRequestsControllerTest < ActionDispatch::IntegrationTest
     assert_select "body", text: /sudah dipesan/
   end
 
+  test "pemilik bisa membuka detail peminjamannya" do
+    sign_in_as users(:karyawan)
+
+    get borrow_request_path(borrow_requests(:kamera_disetujui))
+
+    assert_response :success
+    assert_select "body", text: /Dokumentasi kunjungan klien/
+  end
+
+  test "karyawan lain tidak bisa membuka detail peminjaman orang" do
+    sign_in_as users(:karyawan)
+
+    get borrow_request_path(borrow_requests(:laptop_terlambat))
+
+    assert_redirected_to root_path
+  end
+
+  test "manajer bisa membuka detail peminjaman siapa pun" do
+    sign_in_as users(:manajer)
+
+    get borrow_request_path(borrow_requests(:kamera_disetujui))
+
+    assert_response :success
+  end
+
   test "peminjam bisa membatalkan pengajuannya sendiri" do
     sign_in_as users(:karyawan)
     request = borrow_requests(:laptop_menunggu)

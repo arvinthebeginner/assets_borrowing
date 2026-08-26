@@ -1,0 +1,7 @@
+# Peminjaman yang terlambat sudah pernah diambil barangnya.
+terlambat_diambil:
+  borrow_request: laptop_terlambat
+  checked_by: admin_aset
+  kind: pickup
+  condition: good
+  checked_at: <%= 10.days.ago.to_fs(:db) %>

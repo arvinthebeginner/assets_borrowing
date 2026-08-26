@@ -3,7 +3,7 @@ require "test_helper"
 class BorrowRequestTest < ActiveSupport::TestCase
   setup do
     @kamera = asset_units(:kamera_satu)
-    @booked = borrow_requests(:kamera_disetujui) 
+    @booked = borrow_requests(:kamera_disetujui)
   end
 
   test "pengajuan yang wajar tersimpan" do
@@ -28,7 +28,7 @@ class BorrowRequestTest < ActiveSupport::TestCase
   end
 
   test "durasi dibatasi 30 hari" do
-    laptop = asset_units(:macbook_satu) 
+    laptop = asset_units(:macbook_satu)
     assert build_request(unit: laptop, start_on: days(1), end_on: days(30)).valid?
 
     request = build_request(unit: laptop, start_on: days(1), end_on: days(31))
